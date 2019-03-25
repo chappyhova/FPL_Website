@@ -1,0 +1,23 @@
+h1 {
+    font-family: Arial, serif;
+    color: green;
+    text-align: center;
+}
+
+.dropdowns {
+    font-size: 0.8rem;
+}
+#inputs {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+input {
+    max-width: 4rem;
+}
+
+#fpl {
+    font-size: 0.8rem;
+}
+

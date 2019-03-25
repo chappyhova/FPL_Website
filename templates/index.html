@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FPL GOAT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='multiple-select/multiple-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='DataTables/datatables.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='DataTables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='multiple-select/multiple-select.js') }}"></script>
+</head>
+<body>
+    <h1>FPL GOAT</h1>
+    <!--
+        <div class="dropdowns">
+            <select multiple="multiple" style="width: 300px;" id="team_select">
+                <script>
+                        var teams = ["Arsenal", "Bournemouth", "Brighton", "Burnley", "Cardiff", "Chelsea",
+                                    "Crystal Palace", "Everton", "Fulham", "Huddersfield", "Leicester", "Liverpool", "Man City",
+                                    "Man Utd", "Newcastle", "Southampton", "Spurs", "Watford", "West Ham", "Wolves"];
+                        teams.forEach(function(team) {
+                            document.write("<option value='" + team + "'>" + team + "</option>");
+                        });
+                </script>
+            </select>
+            <select multiple="multiple" style="width: 300px" id="position_select">
+                <script>
+                var positions = ['Goalkeepers', 'Defenders', 'Midfielders', 'Strikers']
+                positions.forEach(function(position) {
+                    document.write("<option value='" + position + "'>" + position + "</option>")
+                });
+                </script>
+            </select>
+        </div>
+     -->
+    <table id="inputs">
+        <tr>
+            <td>VAPM Minimum:</td>
+            <td><input type="text" id="vapm-min" name="vapm-min"></td>
+            <td>VAPM Maximum:</td>
+            <td><input type="text" id="vapm-max" name="vapm-max"></td>
+            <td>Minutes Minimum:</td>
+            <td><input type="text" id="mins-min" name="mins-min"></td>
+            <td>Minutes Maximum:</td>
+            <td><input type="text" id="mins-max" name="mins-max"></td>
+        </tr>
+        <tr>
+            <td>NAPP90 Minimum:</td>
+            <td><input type="text" id="napp90-min" name="napp90-min"></td>
+            <td>NAPP90 Maximum:</td>
+            <td><input type="text" id="napp90-max" name="napp90-max"></td>
+            <td>Price Minimum:</td>
+            <td><input type="text" id="price-min" name="price-min"></td>
+            <td>Price Maximum:</td>
+            <td><input type="text" id="price-max" name="price-max"></td>
+        </tr>
+        <tr>
+            <td>Ownership Minimum:</td>
+            <td><input type="text" id="own-min" name="own-min"></td>
+            <td>Ownership Maximum:</td>
+            <td><input type="text" id="own-max" name="own-max"></td>
+            <td>Mins Last x Games Minimum:</td>
+            <td><input type="text" id="mins-last-x-min" name="mins-last-x-min"></td>
+            <td>Mins Last x Games Maximum:</td>
+            <td><input type="text" id="mins-last-x-max" name="mins-last-x-max"></td>
+        </tr>
+        <tr>
+            <form method="post" class="form" autocomplete="off" method="post">
+                <td>Last x Matches</td>
+                <td><input type="text" id="last-x-games" name="last-x-games"></td>
+                <td><input class="btn btn-default" type="submit" value="Apply"></td>
+            </form>
+        </tr>
+
+    </table>
+    <table border="0" cellspacing="5" cellpadding="5">
+        {{ data | safe }}
+    </table>
+    <script>
+
+        $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#vapm-min').val(), 10 );
+            var max = parseInt( $('#vapm-max').val(), 10 );
+            var creativity = parseFloat( data[1] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#mins-min').val(), 10 );
+            var max = parseInt( $('#mins-max').val(), 10 );
+            var creativity = parseFloat( data[3] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#napp90-min').val(), 10 );
+            var max = parseInt( $('#napp90-max').val(), 10 );
+            var creativity = parseFloat( data[15] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#price-min').val(), 10 );
+            var max = parseInt( $('#price-max').val(), 10 );
+            var creativity = parseFloat( data[5] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#own-min').val(), 10 );
+            var max = parseInt( $('#own-max').val(), 10 );
+            var creativity = parseFloat( data[7] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var min = parseInt( $('#mins-last-x-min').val(), 10 );
+            var max = parseInt( $('#mins-last-x-max').val(), 10 );
+            var creativity = parseFloat( data[4] ) || 0; // use data for the age column
+
+            if ( ( isNaN( min ) && isNaN( max ) ) ||
+                ( isNaN( min ) && creativity <= max ) ||
+                ( min <= creativity   && isNaN( max ) ) ||
+                ( min <= creativity   && creativity <= max ) )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $(document).ready(function() {
+        var table = $('#fpl').DataTable( {
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }
+            ]
+        });
+
+
+
+
+        // Event listener to the two range filtering inputs to redraw on input
+        $('#vapm-min, #vapm-max, #mins-min, #mins-max, #napp90-min, #napp90-max, #price-min, #price-max, #own-min, #own-max, #mins-last-x-min, #mins-last-x-max').keyup( function() {
+            table.draw();
+        });
+    });
+
+
+
+        $(document).ready(function() {
+            $('#team_select').multipleSelect({
+                placeholder: "Teams:"
+            });
+
+            $('#position_select').multipleSelect({
+                placeholder: "Positions:"
+            });
+        });
+
+    </script>
+</body>
+</html>
