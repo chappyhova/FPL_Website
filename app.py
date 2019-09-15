@@ -13,15 +13,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def render():
-    with open('C:/Users/Chappy/PycharmProjects/FPL_Website/Data/fpl.pickle', 'rb') as f:
+    with open('C:/Users/Chappy/PycharmProjects/FPL_Website/Data/2019-20/fpl.pickle', 'rb') as f:
         data = pickle.load(f)
-    return render_template('index.html', data=data.to_html(escape=False, index=False, classes='my_class" id = "fpl'))
+    return render_template('index.html', data=data.to_html(escape=False, index=True, classes='my_class" id = "fpl'))
 
 
 @app.route('/', methods=["GET", "POST"])
 def teams():
     if request.method == "POST":
-        with open('C:/Users/Chappy/PycharmProjects/FPL_Website/Data/fpl.pickle', 'rb') as f:
+        with open('C:/Users/Chappy/PycharmProjects/FPL_Website/Data/2019-20/fpl.pickle', 'rb') as f:
             data = pickle.load(f)
         new_data = form(data, request.form['last-x-games'])
         new_data = clean_df(new_data)
@@ -37,14 +37,17 @@ def player(number):
     return render_template('player.html', data=data.to_html(escape=False))
 
 
-if __name__ == '__main__':
-    app.run()
+
+
+
+#if __name__ == '__main__':
+#    app.run()
 
 
 def retrieve_data():
     # Pulling the data from the FPL website
-    fpl_data = requests.get('https://fantasy.premierleague.com/drf/bootstrap-static').json()
-    with open('Data/fpl.json', 'w') as f:
+    fpl_data = requests.get('https://fantasy.premierleague.com/api/bootstrap-static/').json()
+    with open('Data/2019-20/fpl.json', 'w') as f:
         json.dump(fpl_data, f)
 
 
@@ -56,11 +59,11 @@ def player_total(data):
 
 def player_urls(total):
     # Creates a list containing the url for each player
-    player_link = 'https://fantasy.premierleague.com/drf/element-summary/'
+    player_link = 'https://fantasy.premierleague.com/api/element-summary/'
     url_list = []
 
     for i in range(1, total + 1):
-        player_address = player_link + str(i)
+        player_address = player_link + str(i) + '/'
         url_list.append(player_address)
 
     return url_list
@@ -69,10 +72,10 @@ def player_urls(total):
 def get_players():
     # Iterates through the player url list and saves a copy of each player's data as a json file
     counter = 1
-    for player in player_urls(player_total(load_df('Data/fpl.pickle'))):
+    for player in player_urls(player_total(load_df('Data/2019-20/fpl.pickle'))):
         data = requests.get(player).json()
         print(counter)
-        with open('Data/players/' + str(counter) + '.json', 'w') as f:
+        with open('Data/2019-20/players/' + str(counter) + '.json', 'w') as f:
             json.dump(data, f)
         counter += 1
 
@@ -80,14 +83,13 @@ def get_players():
 def clean_players():
     # Shaping the player data and saving as a pickle
     counter = 1
-    for file_name in natsorted(os.listdir('Data/players')):
-        file = open('Data/players/' + file_name, 'r')
+    for file_name in natsorted(os.listdir('Data/2019-20/players')):
+        file = open('Data/2019-20/players/' + file_name, 'r')
         data = json.load(file)
 
         data = pd.DataFrame(data['history'])
         data = data.rename(
-            columns={'opponent_team': 'opponent', 'was_home': 'was home', 'total_points': 'total points',
-                     'big_chances_created': 'big chances created', 'big_chances_missed': 'big chances missed'})
+            columns={'opponent_team': 'opponent', 'was_home': 'was home', 'total_points': 'total points'})
         # Creating a column for non-appearance points
         for index, row in data.iterrows():
             if row['minutes'] > 59:
@@ -104,12 +106,12 @@ def clean_players():
                 data.loc[index, 'over 75 mins'] = False
         # Saving the data required. Also preventing an error that is thrown when a new player to the Premier League has no data
         if not data.empty:
-            data = data[['non-appearance points', 'over 75 mins', 'big chances created', 'big chances missed', 'minutes']]
-            save_df(data, 'Data/players_pickle/' + str(counter) + '.pickle')
+            data = data[['non-appearance points', 'over 75 mins', 'minutes']]
+            save_df(data, 'Data/2019-20/players_pickle/' + str(counter) + '.pickle')
         else:
-            data = pd.DataFrame(columns=['non-appearance points', 'over 75 mins', 'big chances created', 'big chances missed', 'minutes'], data=[[0, 0, 0, 0, 0]])
+            data = pd.DataFrame(columns=['non-appearance points', 'over 75 mins', 'minutes'], data=[[0, 0, 0, 0, 0]])
             print(data.columns.values)
-            save_df(data, 'Data/players_pickle/' + str(counter) + '.pickle')
+            save_df(data, 'Data/2019-20/players_pickle/' + str(counter) + '.pickle')
 
         counter += 1
 
@@ -141,7 +143,7 @@ def json_to_df(data):
     fpl_data = formatting(fpl_data)
     fpl_data = team_names(fpl_data, 'team')
     fpl_data = clean_df(fpl_data)
-    fpl_data.to_pickle("Data/fpl.pickle")
+    fpl_data.to_pickle("Data/2019-20/fpl.pickle")
 
 
 def formatting(data):
@@ -171,8 +173,8 @@ def vapm(data):
 
 def clean_df(fpl_data):
     # Cleaning the main FPL data and making it more readable
-    fpl_data = fpl_data.round(2)
-    fpl_data = fpl_data.fillna(0)
+    fpl_data = (fpl_data.round(2)
+                .fillna(0))
 
     return fpl_data
 
@@ -191,8 +193,8 @@ def combining_dfs(data):
     counter = 1
     main_data = data
 
-    for file_name in natsorted(os.listdir('Data/players_pickle')):
-            data = load_df('Data/players_pickle/' + file_name)
+    for file_name in natsorted(os.listdir('Data/2019-20/players_pickle')):
+            data = load_df('Data/2019-20/players_pickle/' + file_name)
             non_app_points = data['non-appearance points'].sum()
             seventy_five_mins = data['over 75 mins'].sum()
             big_chances_created = data['big chances created'].sum()
@@ -212,15 +214,17 @@ def form(data, num_of_matches):
     # Creating the headers for each column which will be dynamic dependent on user input
     non_appearance_header = 'Non-Appearance Points Last ' + str(num_of_matches) + ' Matches'
     mins_header = 'Mins Last ' + str(num_of_matches) + ' Matches'
-    napp90_header = 'NAPP90 Last ' + str(num_of_matches) + ' Matches'
+    napp90_header = 'NA-PP90 Last ' + str(num_of_matches) + ' Matches'
 
     # Iterating through each player and calculating their form which is non-appearance points, minutes played & non-apperance points per 90 minutes over the last x games
     counter = 1
     main_data = data
-    for file_name in natsorted(os.listdir('Data/players_pickle')):
-        data = load_df('Data/players_pickle/' + file_name)
+    for file_name in natsorted(os.listdir('Data/2019-20/players_pickle')):
+        data = load_df('Data/2019-20/players_pickle/' + file_name)
         mins_last_x = data['minutes'][-int(num_of_matches):].sum()
-        non_appearance_last_x = (data['non-appearance points'][-int(num_of_matches):].sum() / data['minutes'][-int(num_of_matches):].sum()) / main_data.loc[main_data['id'] == counter, 'price'] * 10000
+        for col in data.columns:
+            print(col)
+        non_appearance_last_x = (data['non-appearance points'][-int(num_of_matches):].sum() / data['minutes'][-int(num_of_matches):].sum()) / main_data.loc[main_data['Player Name'] == counter, 'price'] * 10000
         napp90_last_x = (data['non-appearance points'][-int(num_of_matches):].sum() / data['minutes'][-int(num_of_matches):].sum()) * 90
 
         main_data.loc[main_data['id'] == counter, napp90_header] = napp90_last_x
@@ -229,7 +233,7 @@ def form(data, num_of_matches):
         counter += 1
 
     # Returning the data with the new headers
-    main_data = main_data[['id', 'VAPM', 'Player Name', 'minutes', mins_header, 'price', 'total points', 'ownership',
+    main_data = main_data[['Player Name', 'VAPM', 'Minutes', mins_header, 'Price', 'Total Points', 'Ownership',
                          'position', 'threat', 'creativity', 'team', non_appearance_header, 'non-appearance points',
                          'NA-PP90', napp90_header, 'over 75 mins', 'big chances created', 'big chances missed']]
     return main_data
@@ -261,8 +265,9 @@ def run_data():
     retrieve_data()
     get_players()
     clean_players()
-    json_to_df('Data/fpl.json')
-    print(load_df('Data/fpl.pickle'))
+    json_to_df('Data/2019-20/fpl.json')
+
+
 
 
 def save_df(data, filepath):
@@ -275,13 +280,7 @@ def load_df(filepath):
     return data
 
 
-#    def print_pickle(pickle):
-#    df = load_df(pickle)
-#    writer = pd.ExcelWriter('C:/Users/Chappy/df.xlsx', engine='xlsxwriter')
-#    df.to_excel(writer, index=False, sheet_name='report')
-#    workbook = writer.book
-#    worksheet = writer.sheets['report']
-#    workbook.close()
-
 run_data()
+
+
 

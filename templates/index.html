@@ -77,13 +77,27 @@
     <table border="0" cellspacing="5" cellpadding="5">
         {{ data | safe }}
     </table>
+    <fieldset>
+        <legend>Legend</legend>
+        <ul style="list-style-type:circle;">
+            <li><b>Non-Appearance Points</b> - Total points gained by a player minus their appearance points.</li>
+            <li><b>Value</b> - Total points divided by minutes and then again by price.</li>
+            <li><b>VAPM</b> - Value Added Per Million, calculated by dividing non-appearance points by minutes and
+                dividing that total by price, similar to value but using non-appearance points as this better
+                filters the players who play a few minutes each game but gain an appearance point thus
+                artificially inflating their value.</li>
+            <li><b>NA-PP90</b> - Non-Appearance points per 90 minutes</li>
+            <li><b>Threat/90</b> - Amount of threat the player had to the opponents goal per 90 minutes</li>
+            <li><b>Creativity/90</b> - Amount of creativity the player displayed per 90 minutes</li>
+        </ul>
+    </fieldset>
     <script>
 
         $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#vapm-min').val(), 10 );
             var max = parseInt( $('#vapm-max').val(), 10 );
-            var creativity = parseFloat( data[1] ) || 0; // use data for the age column
+            var creativity = parseFloat( data[5] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
                 ( isNaN( min ) && creativity <= max ) ||
@@ -100,7 +114,7 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#mins-min').val(), 10 );
             var max = parseInt( $('#mins-max').val(), 10 );
-            var creativity = parseFloat( data[3] ) || 0; // use data for the age column
+            var creativity = parseFloat( data[2] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
                 ( isNaN( min ) && creativity <= max ) ||
@@ -117,7 +131,7 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#napp90-min').val(), 10 );
             var max = parseInt( $('#napp90-max').val(), 10 );
-            var creativity = parseFloat( data[15] ) || 0; // use data for the age column
+            var creativity = parseFloat( data[7] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
                 ( isNaN( min ) && creativity <= max ) ||
@@ -134,7 +148,7 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#price-min').val(), 10 );
             var max = parseInt( $('#price-max').val(), 10 );
-            var creativity = parseFloat( data[5] ) || 0; // use data for the age column
+            var creativity = parseFloat( data[9] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
                 ( isNaN( min ) && creativity <= max ) ||
@@ -151,7 +165,7 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#own-min').val(), 10 );
             var max = parseInt( $('#own-max').val(), 10 );
-            var creativity = parseFloat( data[7] ) || 0; // use data for the age column
+            var creativity = parseFloat( data[11] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
                 ( isNaN( min ) && creativity <= max ) ||
