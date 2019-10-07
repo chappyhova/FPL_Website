@@ -86,7 +86,7 @@
                 dividing that total by price, similar to value but using non-appearance points as this better
                 filters the players who play a few minutes each game but gain an appearance point thus
                 artificially inflating their value.</li>
-            <li><b>NA-PP90</b> - Non-Appearance points per 90 minutes</li>
+            <li><b>NAPP/90</b> - Non-Appearance points per 90 minutes</li>
             <li><b>Threat/90</b> - Amount of threat the player had to the opponents goal per 90 minutes</li>
             <li><b>Creativity/90</b> - Amount of creativity the player displayed per 90 minutes</li>
         </ul>
@@ -97,12 +97,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#vapm-min').val(), 10 );
             var max = parseInt( $('#vapm-max').val(), 10 );
-            var creativity = parseFloat( data[5] ) || 0; // use data for the age column
+            var vapm = parseFloat( data[5] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && vapm <= max ) ||
+                ( min <= vapm   && isNaN( max ) ) ||
+                ( min <= vapm   && vapm <= max ) )
             {
                 return true;
             }
@@ -114,12 +114,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#mins-min').val(), 10 );
             var max = parseInt( $('#mins-max').val(), 10 );
-            var creativity = parseFloat( data[2] ) || 0; // use data for the age column
+            var mins = parseFloat( data[7] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && mins <= max ) ||
+                ( min <= mins   && isNaN( max ) ) ||
+                ( min <= mins   && mins <= max ) )
             {
                 return true;
             }
@@ -131,12 +131,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#napp90-min').val(), 10 );
             var max = parseInt( $('#napp90-max').val(), 10 );
-            var creativity = parseFloat( data[7] ) || 0; // use data for the age column
+            var napp = parseFloat( data[6] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && napp <= max ) ||
+                ( min <= napp   && isNaN( max ) ) ||
+                ( min <= napp   && napp <= max ) )
             {
                 return true;
             }
@@ -148,12 +148,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#price-min').val(), 10 );
             var max = parseInt( $('#price-max').val(), 10 );
-            var creativity = parseFloat( data[9] ) || 0; // use data for the age column
+            var price = parseFloat( data[1] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && price <= max ) ||
+                ( min <= price   && isNaN( max ) ) ||
+                ( min <= price   && price <= max ) )
             {
                 return true;
             }
@@ -165,12 +165,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#own-min').val(), 10 );
             var max = parseInt( $('#own-max').val(), 10 );
-            var creativity = parseFloat( data[11] ) || 0; // use data for the age column
+            var ownership = parseFloat( data[10] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && ownership <= max ) ||
+                ( min <= ownership   && isNaN( max ) ) ||
+                ( min <= ownership   && ownership <= max ) )
             {
                 return true;
             }
@@ -182,12 +182,12 @@
         function( settings, data, dataIndex ) {
             var min = parseInt( $('#mins-last-x-min').val(), 10 );
             var max = parseInt( $('#mins-last-x-max').val(), 10 );
-            var creativity = parseFloat( data[4] ) || 0; // use data for the age column
+            var mins_last_x = parseFloat( data[13] ) || 0; // use data for the age column
 
             if ( ( isNaN( min ) && isNaN( max ) ) ||
-                ( isNaN( min ) && creativity <= max ) ||
-                ( min <= creativity   && isNaN( max ) ) ||
-                ( min <= creativity   && creativity <= max ) )
+                ( isNaN( min ) && mins_last_x <= max ) ||
+                ( min <= mins_last_x   && isNaN( max ) ) ||
+                ( min <= mins_last_x   && mins_last_x <= max ) )
             {
                 return true;
             }
